@@ -9,3 +9,39 @@
 // program clears the screen, i.e. writes "white" in every pixel.
 
 // Put your code here.
+
+//Initialize the screen to white
+@WHITESCREEN
+0;JEQ
+
+//Look for keypress
+(EVENTLOOP)
+
+//Load the Keyboard memory into A
+@KBD
+D=M
+
+//Darken screen if keypress D>0
+@BLACKSCREEN
+D;JGT
+
+@WHITESCREEN
+D;JEQ
+
+
+(BLACKSCREEN)
+@SCREEN
+M=1
+
+@EVENTLOOP
+0;JEQ
+
+
+(WHITESCREEN)
+@SCREEN
+M=0
+
+@EVENTLOOP
+0;JEQ
+
+(END)
