@@ -10,18 +10,15 @@
 
 // Put your code here.
 
-//Initialize the current position pointer
 @CURRENT_POS
 M=0
 
-//Initilize MAX screen position
 @8192
 D=A
 @MAX_POS
 M=D
 
 
-//Keypress detect loop
 (EVENTLOOP)
 @KBD
 D=M
@@ -32,17 +29,20 @@ D;JEQ
 @EVENTLOOP
 0;JEQ
 
+
 (BLACK)
 @ARG
 M=-1
 @DRAW
 0;JEQ
 
+
 (WHITE)
 @ARG
 M=0
 @DRAW
 0;JEQ
+
 
 (DRAW)
 @SCREEN
@@ -51,7 +51,6 @@ D=A
 D=D + M
 @ADDRESS
 M=D
-
 @ARG
 D=M
 @ADDRESS
