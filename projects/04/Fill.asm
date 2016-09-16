@@ -11,8 +11,11 @@
 // Put your code here.
 
 //Initialize the current position pointer
+@8128
+D=A
 @CURRENT_POS
-M=0
+M=D
+
 
 //Initilize MAX screen position
 @8192
