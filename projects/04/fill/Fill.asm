@@ -45,35 +45,27 @@ M=0
 0;JEQ
 
 (DRAW)
-
-//Calculate the address to color
 @SCREEN
 D=A
 @CURRENT_POS
-A=D + M
-D=A
+D=D + M
 @ADDRESS
 M=D
 
-//Set the color using ARG register value
 @ARG
 D=M
 @ADDRESS
 A=M
 M=D
 
-//Increment CURRENT_POS
 @CURRENT_POS
 M=M + 1
-
 @MAX_POS
 D=M
 @CURRENT_POS
 D=D - M
 @RESET
 D;JEQ
-
-//Jump back to event loop
 @EVENTLOOP
 0;JEQ
 
