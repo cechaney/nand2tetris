@@ -43,17 +43,38 @@ public class SymbolParser {
 
 					symbolTable.addEntry(curCmdSymbol,instrNumber);
 
-				} else if(CommandType.A_COMMAND.equals(curCmdType)){
+				} else if(curCmdType != null){
+
+					instrNumber++;
+				}
+
+			}
+
+			try{
+				if(br != null){
+					br.close();
+				}
+			} catch(IOException ioe){
+				ioe.printStackTrace();
+			}
+
+			instrNumber = 0;
+
+			br = new BufferedReader(new FileReader(inputFilename));
+
+			while((line = br.readLine()) != null){
+
+				curCmd = CmdUtil.cleanCmd(line);
+				curCmdType = CmdUtil.typeCmd(curCmd);
+				curCmdSymbol = CmdUtil.symbolCmd(curCmd);
+
+				if(CommandType.A_COMMAND.equals(curCmdType)){
 
 					if(!Character.isDigit(curCmdSymbol.charAt(0))){
 
-						if(!curCmdSymbol.equals(curCmdSymbol.toUpperCase())){
-
-							if(!symbolTable.contains(curCmdSymbol)){
-								symbolTable.addEntry(curCmdSymbol,memoryLoc);
-								memoryLoc++;
-							}
-
+						if(!symbolTable.contains(curCmdSymbol)){
+							symbolTable.addEntry(curCmdSymbol,memoryLoc);
+							memoryLoc++;
 						}
 
 					}
@@ -64,6 +85,14 @@ public class SymbolParser {
 					instrNumber++;
 				}
 
+			}
+
+			try{
+				if(br != null){
+					br.close();
+				}
+			} catch(IOException ioe){
+				ioe.printStackTrace();
 			}
 
 		} catch (FileNotFoundException e) {
