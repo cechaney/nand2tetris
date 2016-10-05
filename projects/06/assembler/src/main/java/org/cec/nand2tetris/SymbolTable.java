@@ -1,10 +1,10 @@
 package org.cec.nand2tetris;
 
-import java.util.Hashtable;
+import java.util.HashMap;
 
 public class SymbolTable {
 
-	private final Hashtable<String, Integer> symbols = new Hashtable<>();
+	private final HashMap<String, Integer> symbols = new HashMap<>();
 
 	public SymbolTable(){
 

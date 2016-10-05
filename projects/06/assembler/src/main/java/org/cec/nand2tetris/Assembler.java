@@ -16,12 +16,29 @@ public class Assembler {
 		String inputFilename = args[0];
 		String outputFilename = inputFilename.substring(0, inputFilename.lastIndexOf(".asm")) + ".hack";
 
-		LOGGER.debug("Starting assembler...");
+		LOGGER.info("Starting assembler...");
 
-		LOGGER.debug("inputFilename " + inputFilename);
-		LOGGER.debug("outputFilename: " + outputFilename);
+		LOGGER.info("inputFilename " + inputFilename);
+		LOGGER.info("outputFilename: " + outputFilename);
 
-		LOGGER.debug("Beginning assembly....");
+		LOGGER.info("Beginning assembly....");
+
+		SymbolTable symbolTable = parseSymbols(inputFilename);
+
+		if(symbolTable != null){
+			assembleInstructions(inputFilename, symbolTable, outputFilename);
+		} else {
+			LOGGER.info("Failed to populate symbols");
+		}
+
+		LOGGER.info("Finished assembly");
+	}
+
+	private static SymbolTable parseSymbols(String inputFilename){
+		return SymbolParser.parse(inputFilename);
+	}
+
+	private static void assembleInstructions(String inputFilename, SymbolTable symbolTable, String outputFilename) {
 
 		Parser parser = null;
 		BufferedWriter outputFile = null;
@@ -52,27 +69,35 @@ public class Assembler {
 					LOGGER.debug("Command Comparison:" + parser.comp());
 					LOGGER.debug("Command Jump:" + parser.jump());
 
-					if(Parser.CommandType.A_COMMAND.equals(parser.commandType())){
+					if(CommandType.A_COMMAND.equals(parser.commandType())){
 
-						Integer value = Integer.valueOf(parser.symbol());
+						Integer value = 0;
+
+						if(Character.isDigit(parser.symbol().charAt(0))){
+							value = Integer.valueOf(parser.symbol());
+						} else {
+							value = symbolTable.getAddress(parser.symbol());
+						}
 
 						line = String.format("%16s", Integer.toBinaryString(value)).replace(' ', '0');
 
-						LOGGER.debug("A Command: " + line);
+						LOGGER.info("A Command: " + line);
 
-					} else if(Parser.CommandType.C_COMMAND.equals(parser.commandType())){
+					} else if(CommandType.C_COMMAND.equals(parser.commandType())){
 
 						line = "111" +
 								Code.comp(parser.comp()) +
 								Code.dest(parser.dest()) +
 								Code.jump(parser.jump());
 
-						LOGGER.debug("C Command: " + line);
+						LOGGER.info("C Command: " + line);
 
 					}
 
-					outputFile.write(line);
-					outputFile.newLine();
+					if(line != null){
+						outputFile.write(line);
+						outputFile.newLine();
+					}
 
 				}
 
@@ -85,6 +110,7 @@ public class Assembler {
 		} catch (IOException e) {
 			LOGGER.error("IO error during assembly", e);
 		} finally{
+
 			if(outputFile != null){
 				try{
 					outputFile.close();
@@ -92,9 +118,15 @@ public class Assembler {
 					ioe.printStackTrace();
 				}
 			}
-		}
 
-		LOGGER.debug("Finished assembly");
+			try{
+				if(parser != null){
+					parser.shutdown();
+				}
+			} catch(IOException ioe){
+				ioe.printStackTrace();
+			}
+		}
 	}
 
 
