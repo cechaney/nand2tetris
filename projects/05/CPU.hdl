@@ -92,9 +92,4 @@ CHIP CPU {
 
     PC(in=aRegValue, inc=incInstr, load=loadInstr, reset=reset, out[0..14]=pc);
 
-
-
-
-
-
 }
